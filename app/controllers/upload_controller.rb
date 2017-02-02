@@ -1,7 +1,7 @@
 class UploadController < ApplicationController
   require 'transcoder'
   
-  FFMPEG_PATH = '/usr/local/bin/ffmpeg'
+  FFMPEG_PATH = store_manage_config['ffmpeg_path']
 
   def index
   end
