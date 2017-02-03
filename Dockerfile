@@ -20,6 +20,9 @@ RUN echo "deb http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/so
     make install && \
     echo "include /usr/local/lib/" >> /etc/ld.so.conf && \
     ldconfig && \
-    FFMPEG_PATH="$(which ffmpeg)"
+    FFMPEG_PATH="$(which ffmpeg)" && \
+    cd .. && \
+    rm -rf ffmpeg_extracted && \
+    rm -rf ffmpeg_src
 
 CMD ["rails", "server", "-b", "0.0.0.0"]
