@@ -65,6 +65,7 @@ class UploadController < ApplicationController
   def cleanup!
     # Cleanup chunk file directory and all chunk files
     FileUtils.rm_rf chunk_file_directory
+    FileUtils.rm(final_file_path)
   end
 
   def final_file_path
