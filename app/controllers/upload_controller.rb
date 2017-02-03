@@ -1,7 +1,7 @@
 class UploadController < ApplicationController
   require 'transcoder'
-  
-  FFMPEG_PATH = store_manage_config['ffmpeg_path']
+
+  FFMPEG_PATH = Rails.application.config.store_manage.ffmpeg_path
 
   def index
   end
