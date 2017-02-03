@@ -5,13 +5,19 @@ MAINTAINER Louise Yang (louise.yang@scpr.org)
 
 # Add multimedia sources so we can install FFMPEG
 RUN echo "deb http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
-    echo "deb-src http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list && \
-    apt-get update
-RUN apt-get -y --force-yes install deb-multimedia-keyring && \
-    apt-get update
+    echo "deb-src http://www.deb-multimedia.org jessie main non-free" >> /etc/apt/sources.list
+RUN apt-get update && apt-get -y --force-yes install deb-multimedia-keyring
 
+# Can get rid of openjpeg??
 # All the required libraries needed to support FFMPEG
-RUN apt-get -y --force-yes install build-essential libvorbis-dev libfdk-aac-dev libtheora-dev libspeex-dev yasm pkg-config libfaac-dev libopenjpeg-dev libx264-dev
+RUN apt-get install -y --force-yes \
+    build-essential \
+    libvorbis-dev \
+    libfdk-aac-dev \
+    yasm \
+    pkg-config \
+    libfaac-dev \
+    libx264-dev
 
 # Build and install FFMPEG
 RUN mkdir ffmpeg_extracted && \
@@ -22,7 +28,17 @@ RUN mkdir ffmpeg_extracted && \
     cd ffmpeg_src && \
     tar xvjf ../ffmpeg_extracted/ffmpeg-3.2.2.tar.bz2 && \
     cd ffmpeg-3.2.2 && \
-    ./configure --enable-gpl --enable-postproc --enable-swscale --enable-avfilter --enable-libvorbis --enable-libtheora --enable-libx264 --enable-libspeex --enable-shared --enable-pthreads --enable-libopenjpeg --enable-libfdk-aac --enable-nonfree && \
+    ./configure \
+    --enable-gpl \
+    --enable-postproc \
+    --enable-swscale \
+    --enable-avfilter \
+    --enable-libvorbis \
+    --enable-libx264 \
+    --enable-shared \
+    --enable-pthreads \
+    --enable-libfdk-aac \
+    --enable-nonfree && \
     make && \
     make install && \
     echo "include /usr/local/lib/" >> /etc/ld.so.conf && \
@@ -42,14 +58,21 @@ RUN bundle config --global frozen 1
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-ONBUILD COPY Gemfile /usr/src/app/
-ONBUILD COPY Gemfile.lock /usr/src/app/
-ONBUILD RUN bundle install
+COPY Gemfile /usr/src/app/
+COPY Gemfile.lock /usr/src/app/
+RUN bundle install
 
-ONBUILD COPY . /usr/src/app
+COPY . /usr/src/app
 
-RUN apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*
-RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+RUN apt-get install -y \
+    nodejs \
+    --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y \
+    mysql-client \
+    postgresql-client \
+    sqlite3 --no-install-recommends && \
+    rm -rf /var/lib/apt/lists/*
 
 EXPOSE 3000
 CMD ["rails", "server", "-b", "0.0.0.0"]
