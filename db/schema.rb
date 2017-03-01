@@ -6,6 +6,7 @@ Sequel.migration do
       column :filename, "text", :null=>false
       column :created_at, "timestamp without time zone", :null=>false
       column :updated_at, "timestamp without time zone", :null=>false
+      column :file_data, "text"
       
       index [:filename], :name=>:audios_filename_key, :unique=>true
     end

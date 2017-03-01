@@ -77,7 +77,8 @@ class UploadController < ApplicationController
   def create_new_audio
     audio = Audio.new(
       title: params[:title],
-      filename: params[:flowFilename]
+      filename: params[:flowFilename],
+      file: File.open(final_flac_path)
     )
     audio.save
   end

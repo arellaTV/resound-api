@@ -8,6 +8,7 @@ Sequel.migration do
       String :filename, null: false, unique: true
       DateTime :created_at, null: false
       DateTime :updated_at, null: false
+      String :file_data, text: true
     end
 
     pgt_created_at(
